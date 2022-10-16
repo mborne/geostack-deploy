@@ -1,0 +1,3 @@
+ufw_rules:
+  - rule: allow
+    to_port: 22

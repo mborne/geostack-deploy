@@ -1,0 +1,7 @@
+ufw_rules:
+  - rule: allow
+    to_port: 22
+  - rule: allow
+    to_port: 80
+  - rule: allow
+    to_port: 443

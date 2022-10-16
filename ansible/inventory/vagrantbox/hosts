@@ -1,0 +1,9 @@
+[all]
+vagrantbox-1 ansible_ssh_host=192.168.50.201 ansible_user=vagrant
+vagrantbox-2 ansible_ssh_host=192.168.50.202 ansible_user=vagrant
+
+[geoserver]
+vagrantbox-1
+
+[postgres]
+vagrantbox-2

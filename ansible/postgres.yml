@@ -1,0 +1,7 @@
+---
+- name: Install PostgreSQL
+  hosts: postgres
+  become: yes
+  become_method: sudo
+  roles:
+    - postgres

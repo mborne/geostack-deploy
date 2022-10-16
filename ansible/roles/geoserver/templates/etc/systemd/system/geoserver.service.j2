@@ -1,0 +1,15 @@
+[Unit]
+Description=Geoserver
+After=multi-user.target
+
+[Service]
+Type=simple
+User=geoserver
+WorkingDirectory=/opt/geoserver/bin
+ExecStart=/bin/bash /opt/geoserver/bin/startup.sh
+Restart=always
+RestartSec=5
+Environment="GEOSERVER_DATA_DIR=/var/geoserver_data_dir"
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,7 @@
+---
+- name: Install GeoServer
+  hosts: geoserver
+  become: yes
+  become_method: sudo
+  roles:
+    - geoserver

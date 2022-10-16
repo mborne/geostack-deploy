@@ -1,0 +1,69 @@
+
+#-----------------------------------------------------------
+# Installation des pré-requis
+#-----------------------------------------------------------
+
+- name: Install OpenJDK
+  ansible.builtin.apt:
+    name: openjdk-11-jre-headless
+    state: present
+    update_cache: yes
+
+- name: Install unzip for unarchive module
+  ansible.builtin.apt:
+    name: unzip
+    state: present
+
+#-----------------------------------------------------------
+# Création d'un utilisateur et d'un groupe geoserver
+#-----------------------------------------------------------
+
+- name: Create "geoserver" group
+  ansible.builtin.group:
+    name: geoserver
+    state: present
+  
+- name: Create "geoserver" user
+  ansible.builtin.user:
+    name: geoserver
+    group: geoserver
+    shell: /bin/bash
+    state: present
+
+- name: Create /opt/geoserver directory
+  ansible.builtin.file:
+    path: /opt/geoserver
+    state: directory
+    owner: geoserver
+    group: geoserver
+
+- name: "Create /var/geoserver_data_dir directory (GEOSERVER_DATA_DIR)"
+  ansible.builtin.file:
+    path: /var/geoserver_data_dir
+    state: directory
+    owner: geoserver
+    group: geoserver
+
+- name: Download Platform Independent Binary and extract to /opt/geoserver
+  ansible.builtin.unarchive:
+    src: "https://sourceforge.net/projects/geoserver/files/GeoServer/{{ geoserver_version }}/geoserver-{{ geoserver_version }}-bin.zip"
+    dest: /opt/geoserver
+    remote_src: yes
+    creates: '/opt/geoserver/VERSION.txt'
+    group: geoserver
+    owner: geoserver
+
+#-----------------------------------------------------------
+# Création et démarrage d'un service systemd pour geoserver
+#-----------------------------------------------------------
+- name: Generate /etc/systemd/system/geoserver.service
+  template:
+    src: etc/systemd/system/geoserver.service.j2
+    dest: /etc/systemd/system/geoserver.service
+
+- name: Start geoserver service
+  systemd:
+    name: geoserver
+    state: restarted
+    enabled: yes
+    daemon_reload: yes
