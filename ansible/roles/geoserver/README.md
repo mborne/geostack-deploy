@@ -19,9 +19,15 @@
 
 L'utilisation d'un service systemd permet de :
 
-* Contrôler de manière simple le bon fonctionnement du service (`sudo service geoserver status`)
-* Simplifier la gestion des logs du service (`sudo journalctl -u geoserver -f`)
-* S'assurer du redémarrage du service en cas de redémarrage de la machine
+* **Contrôler le bon fonctionnement du service** avec par exemple `sudo service geoserver status` :
+
+![service geoserver status](../../docs/geoserver-service-status.png)
+
+* Simplifier la **gestion des logs du service** avec par exemple `sudo journalctl -u geoserver -f` :
+
+![geoserver logs](../../docs/geoserver-logs.png)
+
+* S'assurer du **redémarrage du service en cas de redémarrage de la machine**.
 
 ## Remarques
 

@@ -22,30 +22,39 @@ Nous observons le résultat suivant :
 
 ![ansible-playbook postgres.yml](docs/ansible-playbook-postgres.png)
 
-Le fichier [roles/postgres/README.md](roles/postgres/README.md) explique le fonctionnement du rôle utilisé par ce playbook.
+Nous notons que le playbook fait appel à un seul rôle `postgres`. Le fichier [roles/postgres/README.md](roles/postgres/README.md) explique son fonctionnement.
 
-Nous pouvons tester ainsi :
+### Création d'une base de données
+
+Manuellement, nous procéderions ainsi :
 
 ```bash
 # se connecter à la machine
 ssh vagrant@vagrantbox-2
 # switcher sur l'utilisateur postgres
 sudo su postgres
-# créer une base "gis"
-createdb gis
+# création d'un utilisateur geoserver
+psql -c "CREATE USER geoserver WITH PASSWORD 'TheGeoServerP@ssword'"
+# créer une base "gis" avec geoserver comme propriétaire
+createdb -O geoserver gis
 # ajouter l'extension postgis
 psql -d gis -c "CREATE EXTENSION postgis"
 ```
 
-Nous noterons que nous pourrions aussi utiliser un module [Community.Postgresql](https://docs.ansible.com/ansible/latest/collections/community/postgresql/index.html#plugin-index) d'ansible pour créer cette base.
+Nous noterons que nous pourrions aussi utiliser un module [Community.Postgresql](https://docs.ansible.com/ansible/latest/collections/community/postgresql/index.html#plugin-index) d'ansible pour créer cette base avec un playbook `create-db.yml` par exemple.
 
-### [geoserver.yml](geoserver.yml)
 
-Le déploiement est réalisé à l'aide de la commande suivante :
+### Déploiement de GeoServer
+
+Le déploiement est réalisé à l'aide du playbook [geoserver.yml](geoserver.yml) comme suit :
 
 ```bash
 ansible-playbook -i inventory/vagrantbox geoserver.yml
 ```
+
+Nous observons le résultat suivant :
+
+![ansible-playbook geoserver.yml](docs/ansible-playbook-geoserver.png)
 
 Le fichier [roles/geoserver](roles/geoserver/README.md) explique le fonctionnement du rôle utilisé par ce playbook.
 
