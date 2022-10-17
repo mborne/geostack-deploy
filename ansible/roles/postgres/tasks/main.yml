@@ -15,7 +15,7 @@
     dest: '/etc/apt/sources.list.d/pgdg.list'
 
 # sudo apt-get update
-# sudo apt-get -y install postgresql-13
+# sudo apt-get -y install postgresql-14
 
 - name: "Install PostgreSQL {{ postgres_version }}"
   apt:
@@ -23,3 +23,11 @@
     state: present
     update_cache: yes
 
+# sudo apt-get -y install postgresql-13-postgis-3
+
+- name: "Install PostGIS {{ postgres_postgis_version }}"
+  apt:
+    name: "postgresql-{{ postgres_version }}-postgis-{{ postgres_postgis_version }}"
+    state: present
+    update_cache: yes
+  when: postgres_postgis_enabled | bool

@@ -1,1 +1,8 @@
 postgres_version: 14
+
+postgres_postgis_enabled: true
+postgres_postgis_version: 3
+
+
+
+

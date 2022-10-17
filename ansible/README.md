@@ -10,13 +10,17 @@ Nous avons ici un seul inventaire [inventory/vagrantbox](inventory/vagrantbox/RE
 
 ## Les playbooks
 
-### [postgres.yml](postgres.yml)
+### Déploiement de PostgreSQL
 
-Le déploiement est réalisé à l'aide de la commande suivante :
+Le déploiement est réalisé à l'aide du playbook [postgres.yml](postgres.yml) comme suit :
 
 ```bash
 ansible-playbook -i inventory/vagrantbox postgres.yml
 ```
+
+Nous observons le résultat suivant :
+
+![ansible-playbook postgres.yml](docs/ansible-playbook-postgres.png)
 
 Le fichier [roles/postgres/README.md](roles/postgres/README.md) explique le fonctionnement du rôle utilisé par ce playbook.
 
