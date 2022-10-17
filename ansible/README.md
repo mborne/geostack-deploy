@@ -6,7 +6,9 @@ Illustration du déploiement de GeoServer et PostgreSQL avec Ansible.
 
 ## L'inventaire ansible
 
-Nous avons ici un seul inventaire [inventory/vagrantbox](inventory/vagrantbox/README.md). En situation réelle, nous aurions plutôt `inventory/geostack_qlf` et `inventory/geostack_prod`.
+Nous avons ici un seul inventaire [inventory/vagrantbox/hosts](inventory/vagrantbox/hosts) avec un fichier [inventory/vagrantbox/README.md](inventory/vagrantbox/README.md) expliquant comment créer les machines avec vagrant.
+
+En situation réelle, nous aurions plutôt `inventory/geostack_qlf` et `inventory/geostack_prod`.
 
 ## Les playbooks
 
