@@ -56,8 +56,7 @@ Nous observons le résultat suivant :
 
 ![ansible-playbook geoserver.yml](docs/ansible-playbook-geoserver.png)
 
-Le fichier [roles/geoserver](roles/geoserver/README.md) explique le fonctionnement du rôle utilisé par ce playbook.
-
+Nous notons que le playbook fait appel à un seul rôle `geoserver`. Le fichier [roles/geoserver/README.md](roles/geoserver/README.md) explique son fonctionnement.
 
 Nous pouvons tester en accédant à http://vagrantbox-1:8080/geoserver/ (admin/geoserver) et en vérifiant l'état du service geoserver :
 

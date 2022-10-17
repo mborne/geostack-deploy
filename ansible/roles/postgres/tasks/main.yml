@@ -31,3 +31,12 @@
     state: present
     update_cache: yes
   when: postgres_postgis_enabled | bool
+
+- name: Configure listen_addresses to '*' in postgresql.conf
+  lineinfile:
+    dest: /etc/postgresql/{{ postgres_version }}/main/postgresql.conf
+    regexp: "listen_addresses ="
+    line: "listen_addresses = '*'"
+    state: present
+  notify: restart postgresql
+
