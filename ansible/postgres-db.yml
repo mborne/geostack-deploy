@@ -1,0 +1,58 @@
+---
+- name: Install PostgreSQL
+  hosts: postgres
+  become: yes
+  become_method: sudo
+
+  # NB : nous utiliserions en réalité un secret plutôt qu'un dialogue
+  vars_prompt:
+    - name: db_user_password
+      prompt: What is the password for the geoserver user?
+
+  tasks:
+    - fail:
+        msg: "Fail when 'db_user_password' {{ db_user_password }} is empty"
+      when: db_user_password|length == 0
+
+    - name: "Install 'psycopg2' package required by community.postgresql"
+      apt:
+        name: python3-psycopg2
+        state: present
+        update_cache: yes
+
+    # https://docs.ansible.com/ansible/latest/collections/community/postgresql/postgresql_user_module.html
+    - name: "Create user 'geoserver' for PostgreSQL"
+      community.postgresql.postgresql_user:
+        db: postgres
+        name: geoserver
+        password: "{{ db_user_password }}"
+      become_user: postgres
+      vars:
+        ansible_ssh_pipelining: true
+
+    # https://docs.ansible.com/ansible/latest/collections/community/postgresql/postgresql_db_module.html
+    - name: "Create a 'gis' database owned by 'geoserver'"
+      community.postgresql.postgresql_db:
+        name: gis
+        owner: geoserver
+        encoding: UTF-8
+      become_user: postgres
+      vars:
+        ansible_ssh_pipelining: true
+
+    - name: "Add extension 'postgis' to 'gis' database"
+      community.postgresql.postgresql_ext:
+        name: postgis
+        db: gis
+      become_user: postgres
+      vars:
+        ansible_ssh_pipelining: true
+
+    - name: "Configure /etc/postgresql/{{ postgres_version }}/main/pg_hba.conf"
+      community.postgresql.postgresql_pg_hba:
+        dest: "/etc/postgresql/{{ postgres_version }}/main/pg_hba.conf"
+        contype: host
+        users: geoserver
+        databases: gis
+        method: scram-sha-256
+        source: '0.0.0.0/0'

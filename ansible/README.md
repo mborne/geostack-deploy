@@ -10,66 +10,14 @@ Nous avons ici un seul inventaire [inventory/vagrantbox/hosts](inventory/vagrant
 
 En situation réelle, nous aurions plutôt `inventory/geostack_qlf` et `inventory/geostack_prod`.
 
-## Les playbooks
+## Les principaux playbooks
 
-### Déploiement de PostgreSQL
+* [Le playbook postgres.yml pour le déploiement de PostgreSQL](postgres.md)
+* [Le playbook geoserver.yml pour le déploiement de GeoServer](geoserver.md)
 
-Le déploiement est réalisé à l'aide du playbook [postgres.yml](postgres.yml) comme suit :
+## Quelques compléments
 
-```bash
-ansible-playbook -i inventory/vagrantbox postgres.yml
-```
-
-Nous observons le résultat suivant :
-
-![ansible-playbook postgres.yml](docs/ansible-playbook-postgres.png)
-
-Nous notons que le playbook fait appel à un seul rôle `postgres`. Le fichier [roles/postgres/README.md](roles/postgres/README.md) explique son fonctionnement.
-
-### Création d'une base de données
-
-Manuellement, nous procéderions ainsi :
-
-```bash
-# se connecter à la machine
-ssh vagrant@vagrantbox-2
-# switcher sur l'utilisateur postgres
-sudo su postgres
-# création d'un utilisateur geoserver
-psql -c "CREATE USER geoserver WITH PASSWORD 'TheGeoServerP@ssword'"
-# créer une base "gis" avec geoserver comme propriétaire
-createdb -O geoserver gis
-# ajouter l'extension postgis
-psql -d gis -c "CREATE EXTENSION postgis"
-```
-
-Nous noterons que nous pourrions aussi utiliser un module [Community.Postgresql](https://docs.ansible.com/ansible/latest/collections/community/postgresql/index.html#plugin-index) d'ansible pour créer cette base avec un playbook `create-db.yml` par exemple.
-
-
-### Déploiement de GeoServer
-
-Le déploiement est réalisé à l'aide du playbook [geoserver.yml](geoserver.yml) comme suit :
-
-```bash
-ansible-playbook -i inventory/vagrantbox geoserver.yml
-```
-
-Nous observons le résultat suivant :
-
-![ansible-playbook geoserver.yml](docs/ansible-playbook-geoserver.png)
-
-Nous notons que le playbook fait appel à un seul rôle `geoserver`. Le fichier [roles/geoserver/README.md](roles/geoserver/README.md) explique son fonctionnement.
-
-Nous pouvons tester en accédant à http://vagrantbox-1:8080/geoserver/ (admin/geoserver) et en vérifiant l'état du service geoserver :
-
-```bash
-# se connecter à la machine
-ssh vagrant@vagrantbox-1
-# vérifier que le service est "active (running)"
-sudo service geoserver status
-# inspecter au besoin les logs
-sudo journalctl -u geoserver -f
-```
+* [Création d'une base de données PostgreSQL](postgres-db.md)
 
 ## Ressources
 
