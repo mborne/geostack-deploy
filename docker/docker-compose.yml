@@ -20,6 +20,11 @@ services:
       - "8082:8080"
     volumes:
       - geoserver-data:/var/geoserver-data-dir
+    labels:
+    # pour l'exposition avec traefik (optionnel)
+    - "traefik.enable=true"
+    - "traefik.http.routers.gs-geoserver.rule=Host(`gs-geoserver.${HOST_HOSTNAME}`)"
+    - "traefik.http.services.gs-geoserver-service.loadbalancer.server.port=8080"
     restart: unless-stopped
 
 volumes:
