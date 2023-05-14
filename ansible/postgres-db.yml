@@ -56,3 +56,9 @@
         databases: gis
         method: scram-sha-256
         source: '0.0.0.0/0'
+
+    - name: Reload PostgreSQL
+      systemd:
+        name: postgresql
+        state: reloaded
+
