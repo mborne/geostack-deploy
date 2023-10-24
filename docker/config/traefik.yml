@@ -1,0 +1,20 @@
+# Configuration des ports traefik
+entryPoints:
+  web:
+    address: :80
+  websecure:
+    address: :443
+
+# Activation du dashboard traefik
+# http://localhost:8080/dashboard/
+api:
+  insecure: true
+  dashboard: true
+
+# Accès à l'API docker pour découverte des conteneurs
+# à exposer
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    defaultRule: Host(`{{ normalize .Name }}.docker.localhost`)
+    exposedByDefault: false

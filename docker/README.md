@@ -5,43 +5,48 @@ Illustration de l'utilisation de docker compose pour démarrer une stack applica
 * L'image officielle [postgis/postgis](https://hub.docker.com/r/postgis/postgis) pour le déploiement PostgreSQL
 * L'image [mborne/docker-geoserver](https://github.com/mborne/docker-geoserver#readme) construite avec GitHub actions.
 
+Nous remarquerons la présence d'un fichier **[.env](.env)** définissant les **valeurs par défaut des variables d'environnement** utilisée dans [docker-compose.yml](docker-compose.yml)
 
-## Utilisation
 
-* Démarrer la stack :
+## Démarrage de la pile applicative
 
 ```bash
-# export POSTGRES_PASSWORD=MotDePasse
+# Modifier le mot de passe PostgreSQL
+export POSTGRES_PASSWORD=ChangeIt
+# Démarrer la pile applicative
 docker compose up -d
+# Vérifier que les services ont bien démarrés
+docker compose ps
+# Accéder aux journaux applicatifs
+docker compose logs -f postgis
+docker compose logs -f geoserver
 ```
 
-![docker compose up](docs/docker-compose-up.png)
+## Accès aux services
 
-* Vérifier que les services sont bien démarrés : `docker compose ps`
+* Accéder à GeoServer sur le port 18080 :
+  * Ouvrir http://localhost:18080/geoserver/
+  * Se connecter avec admin/geoserver
+* Accéder à PostGIS sur le port 15432 : `psql -h localhost -p 15432 -U postgres`
 
-![docker compose ps](docs/docker-compose-ps.png)
 
-* Accéder à GeoServer sur le port 8082 :
-  * http://localhost:8082/geoserver
-  * http://devbox.ign.fr:8082/geoserver/
+## Mise en oeuvre d'un reverse proxy
 
-## Utilisation de traefik
+Nous remarquerons dans [docker-compose.yml](docker-compose.yml) la présence de labels sur le service GeoServer configurant l'exposition avec [Traefik](https://doc.traefik.io/traefik/) sur http://gs-geoserver.dev.localhost/geoserver/
 
-Nous remarquerons les labels suffisant pour l'exposition avec [traefik](https://doc.traefik.io/traefik/) ainsi que la possibilité de configurer le domaine d'exposition avec la variable d'environnement `HOST_HOSTNAME` :
+Un fichier [config/traefik.yml](config/traefik.yml) minimaliste est mis à disposition pour permettre le déploiement de [Traefik](https://doc.traefik.io/traefik/) comme suit :
 
 ```bash
-HOST_HOSTNAME=devbox.ign.fr docker compose up -d
+docker run -d --name=traefik --restart=unless-stopped \
+    --network geostack \
+    -p 80:80 -p 443:443 -p 8080:8080 \
+    -v $PWD/config/traefik.yml:/etc/traefik/traefik.yml \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    traefik:v2.10
 ```
 
-Ceci permettra d'accéder au service GeoServer avec l'URL suivante : [http://gs-geoserver.devbox.ign.fr/geoserver/](http://gs-geoserver.devbox.ign.fr/geoserver/)
+Nous noterons que :
 
-Nous retrouverons les services dans le dashboard Traefik :
-
-![Dashbord traefik](docs/traefik-dashboard.png)
-
-
-
-
-
-
-
+* Les ports 80, 443 et 8080 doivent être libre sur la machine (utiliser par exemple `sudo lsof -i :80` pour trouver le programme utilisant le port dans le cas contraire)
+* `--network geostack` permet de s'assurer que le conteneur [traefik](https://doc.traefik.io/traefik/) a bien accès au conteneur geoserver
+* `-v /var/run/docker.sock:/var/run/docker.sock` donne accès à l'API docker au conteneur traefik

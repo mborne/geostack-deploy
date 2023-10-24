@@ -1,4 +1,4 @@
-version: '3.5'
+version: '3.8'
 
 services:
 
@@ -6,7 +6,7 @@ services:
     container_name: geostack_postgis
     image: postgis/postgis:13-3.2
     ports:
-      - "5432:5432"
+      - "15432:5432"
     environment:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
@@ -17,14 +17,13 @@ services:
     container_name: geostack_geoserver
     image: ghcr.io/mborne/geoserver:v2.21.1
     ports:
-      - "8082:8080"
+      - "18080:8080"
     volumes:
       - geoserver-data:/var/geoserver-data-dir
     labels:
     # pour l'exposition avec traefik (optionnel)
     - "traefik.enable=true"
     - "traefik.http.routers.gs-geoserver.rule=Host(`gs-geoserver.${HOST_HOSTNAME}`)"
-    - "traefik.http.services.gs-geoserver-service.loadbalancer.server.port=8080"
     restart: unless-stopped
 
 volumes:
@@ -34,5 +33,5 @@ volumes:
     name: geostack-geoserver-data
 
 networks:
-  geostack:
-
+  default:
+    name: geostack

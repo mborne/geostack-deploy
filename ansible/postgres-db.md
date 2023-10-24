@@ -3,7 +3,7 @@
 
 ## Procédure manuelle
 
-Manuellement, nous procéderions ainsi :
+* Créer la base de données avec l'extension PostGIS
 
 ```bash
 # se connecter à la machine
@@ -17,8 +17,6 @@ createdb -O geoserver gis
 # ajouter l'extension postgis
 psql -d gis -c "CREATE EXTENSION postgis"
 ```
-
-Il nous resterait à :
 
 * Ajouter la ligne suivante à `/etc/postgresql/14/main/pg_hba.conf` :
 
