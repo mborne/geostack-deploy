@@ -15,7 +15,7 @@
     dest: '/etc/apt/sources.list.d/pgdg.list'
 
 # sudo apt-get update
-# sudo apt-get -y install postgresql-14
+# sudo apt-get -y install postgresql-15
 
 - name: "Install PostgreSQL {{ postgres_version }}"
   apt:
