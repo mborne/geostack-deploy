@@ -15,7 +15,7 @@ createdb -O geoserver gis
 psql -d gis -c "CREATE EXTENSION postgis"
 ```
 
-En complément, il convient d'autoriser les accès cette base de données en ajoutant la ligne suivante à `/etc/postgresql/14/main/pg_hba.conf` :
+En complément, il convient d'autoriser les accès cette base de données en ajoutant la ligne suivante à `/etc/postgresql/15/main/pg_hba.conf` :
 
 ```
 host    all             geoserver       0.0.0.0/0               scram-sha-256
