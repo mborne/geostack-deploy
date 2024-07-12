@@ -1,0 +1,96 @@
+---
+#-----------------------------------------------------------
+# Demande d'un volume persistant pour GEOSERVER_DATA_DIR
+#-----------------------------------------------------------
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: geoserver
+  name: geoserver-data-pvc
+spec:
+  #storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+#-----------------------------------------------------------
+# Déploiement de GeoServer avec montage du volume
+#-----------------------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: geoserver
+  name: geoserver
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: geoserver
+  template:
+    metadata:
+      labels:
+        app: geoserver
+    spec:
+      containers:
+      - image: ghcr.io/mborne/geoserver:v2.21.1
+        name: geoserver
+        volumeMounts:
+        - name: geoserver-data
+          mountPath: /var/geoserver
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+        env:
+        - name: 'CATALINA_OPTS'
+          value: '-Xms512m -Xmx512m'
+        resources:
+          requests:
+            memory: "768Mi"
+            cpu: "500m"
+          limits:
+            memory: "768Mi"
+            cpu: "2"
+      volumes:
+      - name: geoserver-data
+        persistentVolumeClaim:
+          claimName: geoserver-data-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: geoserver
+  name: geoserver
+spec:
+  #type: LoadBalancer
+  ports:
+  - name: http
+    port: 8080
+    protocol: TCP
+    targetPort: http
+  selector:
+    app: geoserver
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: geoserver
+spec:
+  rules:
+  - host: geoserver.dev.quadtreeworld.net
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: geoserver
+            port:
+              number: 8080
