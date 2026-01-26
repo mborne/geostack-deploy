@@ -66,8 +66,11 @@ Nous noterons que [playbooks/geoserver.yml](playbooks/geoserver.yml) fait appel 
 
 Nous pourrions ensuite appliquer une [procédure de création d'un utilisateur et d'une base de données PostgreSQL](docs/create-db.md).
 
-Nous pouvons aussi nous appuyer sur les modules [ansible Community.Postgresql](https://docs.ansible.com/ansible/latest/collections/community/postgresql/index.html#plugin-index) pour porter cette procédure sous forme d'un [playbooks/create-db.yml](playbooks/create-db.yml).
+Nous pouvons aussi nous appuyer sur les modules [ansible Community.Postgresql](https://docs.ansible.com/ansible/latest/collections/community/postgresql/index.html#plugin-index) pour porter cette procédure sous forme d'un [playbooks/create-db.yml](playbooks/create-db.yml) :
 
+```bash
+ansible-playbook -i inventory/vagrantbox playbooks/create-db.yml
+```
 
 ## Ressources
 
